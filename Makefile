@@ -7,7 +7,7 @@ VERILATOR_ROOT ?= /home/yuegeini/ver/verilator
 VERILATOR = $(VERILATOR_ROOT)/bin/verilator
 VERILATOR_COVERAGE = $(VERILATOR_ROOT)/bin/verilator_coverage
  
-COMPILE_ARGS = --coverage
+COMPILE_ARGS = --coverage --trace
 VERILATOR_INPUT = -f input.vc scr1_pipe_ialu.sv scr1_arch_description.svh scr1_riscv_isa_decoding.svh scr1_search_ms1.svh 
  
 VERILATOR_COV_FLAGS += --annotate logs/annotated
@@ -20,7 +20,7 @@ VERILATOR_COV_FLAGS += coverage.dat
 
 include $(shell cocotb-config --makefiles)/Makefile.sim
  
-all: run
+all: run waves
  
 run:
 	@rm -rf logs
@@ -28,3 +28,9 @@ run:
 	@rm -rf logs/annotated
 	$(VERILATOR_COVERAGE) $(VERILATOR_COV_FLAGS)
 	genhtml logs/coverage.info --output-directory logs/html
+waves:
+	gtkwave dump.vcd
+# .PHONY: view_waveforms
+# view_waveforms:
+# 	verilator -Wall -Wno-fatal --trace $(MODULE).sv --vcdplus +define+COCOTB_SIM=1 -o waveform.vcd
+# 	
