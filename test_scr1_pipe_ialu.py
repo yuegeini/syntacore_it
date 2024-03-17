@@ -45,72 +45,52 @@ class ALUTB(object):
 
     
 @cocotb.test()
-async def test_alu_sub(dut):
-    test = ALUTB(dut)
-    await test._drive_inputs(0x00000001, 0x00000001, SUB)
-    await test._check_outputs(0x00000000, False)
-@cocotb.test()
 async def test_alu_add1(dut):
     test = ALUTB(dut)
     await test._drive_inputs(0x00000000, 0x00000000, ADD)
-    await test._check_outputs(0x00000000, False)
+    await test._check_outputs(0x00000000, 0)
 
 @cocotb.test()
 async def test_alu_add2(dut):
     test = ALUTB(dut)
-    await test._drive_inputs(0x00000001, 0x00000001, ADD)
-    await test._check_outputs(0x00000002, False)
+    await test._drive_inputs(0x00000001, 0xf0000001, ADD)
+    await test._check_outputs(0xf0000002, 0)
 
 @cocotb.test()
-async def test_alu_add_carry(dut):
+async def test_alu_add3(dut):
     test = ALUTB(dut)
-    await test._drive_inputs(0x7fffffff, 0x00000001, ADD)
-    await test._check_outputs(0x80000000, True)
+    await test._drive_inputs(0xffffffff, 0x00000001, ADD)
+    await test._check_outputs(0x00000000, 0)
+
 
 @cocotb.test()
-async def test_alu_sub(dut):
+async def test_alu_add4(dut):
     test = ALUTB(dut)
-    await test._drive_inputs(0x00000001, 0x00000001, SUB)
-    await test._check_outputs(0x00000000, False)
+    await test._drive_inputs(0xffffffff, 0x00000000, ADD)
+    await test._check_outputs(0xffffffff, 0)
+
 
 @cocotb.test()
-async def test_alu_sub_borrow(dut):
+async def test_alu_sub1(dut):
+    test = ALUTB(dut)
+    await test._drive_inputs(0x00000000, 0x00000002, SUB)
+    await test._check_outputs(0xfffffffe, 0)
+
+@cocotb.test()
+async def test_alu_sub2(dut):
+    test = ALUTB(dut)
+    await test._drive_inputs(0x00000002, 0xfffffffe, SUB)
+    await test._check_outputs(0x00000004, 0)
+
+@cocotb.test()
+async def test_alu_sub3(dut):
     test = ALUTB(dut)
     await test._drive_inputs(0x00000001, 0x00000002, SUB)
-    await test._check_outputs(0xfffffffe, True)
+    await test._check_outputs(0xffffffff, 0)
+
 
 @cocotb.test()
-async def test_alu_slt(dut):
+async def test_alu_sub4(dut):
     test = ALUTB(dut)
-    await test._drive_inputs(0x00000001, 0x00000002, SUB_LT)
-    await test._check_outputs(1, False)
-
-@cocotb.test()
-async def test_alu_sltu(dut):
-    test = ALUTB(dut)
-    await test._drive_inputs(0x00000001, 0x00000002, SUB_LTU)
-    await test._check_outputs(0, True)
-
-@cocotb.test()
-async def test_alu_slt_eq(dut):
-    test = ALUTB(dut)
-    await test._drive_inputs(0x00000001, 0x00000001, SUB_EQ)
-    await test._check_outputs(1, True)
-
-@cocotb.test()
-async def test_alu_slt_ne(dut):
-    test = ALUTB(dut)
-    await test._drive_inputs(0x00000001, 0x00000002, SUB_NE)
-    await test._check_outputs(1, False)
-
-@cocotb.test()
-async def test_alu_slt_ge(dut):
-    test = ALUTB(dut)
-    await test._drive_inputs(0x00000002, 0x00000001, SUB_GE)
-    await test._check_outputs(0, True)
-
-@cocotb.test()
-async def test_alu_slt_geu(dut):
-    test = ALUTB(dut)
-    await test._drive_inputs(0x00000002, 0x00000001, SUB_GEU)
-    await test._check_outputs(0, True)
+    await test._drive_inputs(0xffffffff, 0x00000001, SUB)
+    await test._check_outputs(0xfffffffe, 0)

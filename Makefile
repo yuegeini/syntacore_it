@@ -30,7 +30,3 @@ run:
 	genhtml logs/coverage.info --output-directory logs/html
 waves:
 	gtkwave dump.vcd
-# .PHONY: view_waveforms
-# view_waveforms:
-# 	verilator -Wall -Wno-fatal --trace $(MODULE).sv --vcdplus +define+COCOTB_SIM=1 -o waveform.vcd
-# 	
