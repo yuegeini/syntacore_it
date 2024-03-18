@@ -19,7 +19,7 @@ make
 - gtkwave
 
 
-### Результатом будtт:
+### Результатом будет:
 - [testbench](./test_scr1_pipe_ialu.py)
 - [html-отчет по покрытию](./logs/html/index.html)
 - [waveform](./dump.vcd)
