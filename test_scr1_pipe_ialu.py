@@ -17,7 +17,7 @@ class ALUTB(object):
         self.ialu2exu_main_res_o = dut.ialu2exu_main_res_o
         self.ialu2exu_cmp_res_o = dut.ialu2exu_cmp_res_o
 
-
+    # Coroutine to drive input signals
     @cocotb.coroutine
     def _drive_inputs(self, op1, op2, cmd):
         self.exu2ialu_main_op1_i.value = op1
@@ -25,7 +25,7 @@ class ALUTB(object):
         self.exu2ialu_cmd_i.value = cmd
         yield Timer(1, units="ns")
         
-
+    # Coroutine to check output signals
     @cocotb.coroutine
     def _check_outputs(self, expected_result, expected_cmp_res):
         yield Timer(1, units='ns')
@@ -34,7 +34,9 @@ class ALUTB(object):
         if self.ialu2exu_cmp_res_o.value != expected_cmp_res:
             raise TestFailure(f"Unexpected comparison result: {self.ialu2exu_cmp_res_o.value} (expected: {expected_cmp_res})")
         raise TestSuccess("Test passed")
-     
+
+
+# Testcases for ADD operations
 @cocotb.test()
 async def test_alu_add1(dut):
     test = ALUTB(dut)
@@ -61,6 +63,8 @@ async def test_alu_add4(dut):
     await test._check_outputs(0xffffffff, 0)
 
 
+# Testcases for ADD operations with multiple input values
+# Can be commented out for the purpose of time saving
 @cocotb.test()
 async def test_alu_add_m(dut):
     test = ALUTB(dut)
@@ -73,6 +77,7 @@ async def test_alu_add_m(dut):
     await test._check_outputs(res, 0)
 
 
+# Testcases for SUB operations
 @cocotb.test()
 async def test_alu_sub1(dut):
     test = ALUTB(dut)
