@@ -1,17 +1,9 @@
 import cocotb
 from cocotb.triggers import Timer
 from cocotb.result import TestSuccess, TestFailure
-from cocotb.result import TestFailure, TestSuccess
-import cocotb.regression
+from  cocotb.regression import TestFactory
 ADD     = 0b0100
-SUB     = 0b0101
-SUB_LT  = 0b0110
-SUB_LTU = 0b0111
-SUB_EQ  = 0b1000
-SUB_NE  = 0b1001
-SUB_GE  = 0b1010
-SUB_GE  = 0b1011
-SUB_GEU = 0b1100
+SUB     = 0b0101    
 # Define the testbench class
 class ALUTB(object):
     def __init__(self, dut):
@@ -36,14 +28,13 @@ class ALUTB(object):
 
     @cocotb.coroutine
     def _check_outputs(self, expected_result, expected_cmp_res):
-        yield Timer(10, units='ns')
+        yield Timer(1, units='ns')
         if self.ialu2exu_main_res_o.value != expected_result:
             raise TestFailure(f"Unexpected main result: {self.ialu2exu_main_res_o.value} (expected: {expected_result})")
         if self.ialu2exu_cmp_res_o.value != expected_cmp_res:
             raise TestFailure(f"Unexpected comparison result: {self.ialu2exu_cmp_res_o.value} (expected: {expected_cmp_res})")
         raise TestSuccess("Test passed")
-
-    
+     
 @cocotb.test()
 async def test_alu_add1(dut):
     test = ALUTB(dut)
@@ -68,6 +59,18 @@ async def test_alu_add4(dut):
     test = ALUTB(dut)
     await test._drive_inputs(0xffffffff, 0x00000000, ADD)
     await test._check_outputs(0xffffffff, 0)
+
+
+@cocotb.test()
+async def test_alu_add_m(dut):
+    test = ALUTB(dut)
+    for i in range(0x0000000f):
+        for j in range(0x0000f00):
+            await test._drive_inputs(i, j, ADD)
+            res = (i + j) 
+            if dut.ialu2exu_main_res_o != res:
+                await test._check_outputs(res, 0)
+    await test._check_outputs(res, 0)
 
 
 @cocotb.test()
